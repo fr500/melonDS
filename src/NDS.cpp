@@ -30,6 +30,7 @@
 #include "RTC.h"
 #include "Wifi.h"
 #include "Platform.h"
+#include "ARMJIT.h"
 
 
 namespace NDS
@@ -156,6 +157,8 @@ bool Init()
     ARM9 = new ARMv5();
     ARM7 = new ARMv4();
 
+    ARMJIT::Init();
+
     DMAs[0] = new DMA(0, 0);
     DMAs[1] = new DMA(0, 1);
     DMAs[2] = new DMA(0, 2);
@@ -182,6 +185,8 @@ void DeInit()
 {
     delete ARM9;
     delete ARM7;
+
+    ARMJIT::DeInit();
 
     for (int i = 0; i < 8; i++)
         delete DMAs[i];
@@ -1750,6 +1755,8 @@ u32 ARM9Read32(u32 addr)
 
 void ARM9Write8(u32 addr, u8 val)
 {
+    ARMJIT::Invalidate16(0, addr);
+
     switch (addr & 0xFF000000)
     {
     case 0x02000000:
@@ -1779,6 +1786,8 @@ void ARM9Write8(u32 addr, u8 val)
 
 void ARM9Write16(u32 addr, u16 val)
 {
+    ARMJIT::Invalidate16(0, addr);
+
     switch (addr & 0xFF000000)
     {
     case 0x02000000:
@@ -1822,6 +1831,8 @@ void ARM9Write16(u32 addr, u16 val)
 
 void ARM9Write32(u32 addr, u32 val)
 {
+    ARMJIT::Invalidate32(0, addr);
+
     switch (addr & 0xFF000000)
     {
     case 0x02000000:
@@ -2079,6 +2090,8 @@ u32 ARM7Read32(u32 addr)
 
 void ARM7Write8(u32 addr, u8 val)
 {
+    ARMJIT::Invalidate16(1, addr);
+
     switch (addr & 0xFF800000)
     {
     case 0x02000000:
@@ -2117,6 +2130,8 @@ void ARM7Write8(u32 addr, u8 val)
 
 void ARM7Write16(u32 addr, u16 val)
 {
+    ARMJIT::Invalidate16(1, addr);
+
     switch (addr & 0xFF800000)
     {
     case 0x02000000:
@@ -2163,6 +2178,8 @@ void ARM7Write16(u32 addr, u16 val)
 
 void ARM7Write32(u32 addr, u32 val)
 {
+    ARMJIT::Invalidate32(1, addr);
+
     switch (addr & 0xFF800000)
     {
     case 0x02000000:
