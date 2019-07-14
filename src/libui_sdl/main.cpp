@@ -2315,8 +2315,10 @@ void ApplyNewSettings(int type)
     }
     else if (type == 4)
     {
+#ifdef JIT_ENABLED
         if (Config::JIT_Enable)
             ARMJIT::InvalidateBlockCache();
+#endif
     }
 
     EmuRunning = prevstatus;
