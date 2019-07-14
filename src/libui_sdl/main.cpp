@@ -43,6 +43,7 @@
 #include "../Wifi.h"
 #include "../Platform.h"
 #include "../Config.h"
+#include "../ARMJIT.h"
 
 #include "../Savestate.h"
 
@@ -2312,19 +2313,11 @@ void ApplyNewSettings(int type)
         GPU3D::InitRenderer(Screen_UseGL);
         if (Screen_UseGL) uiGLMakeContextCurrent(NULL);
     }
-    /*else if (type == 4) // vsync
+    else if (type == 4)
     {
-        if (Screen_UseGL)
-        {
-            uiGLMakeContextCurrent(GLContext);
-            uiGLSetVSync(Config::ScreenVSync);
-            uiGLMakeContextCurrent(NULL);
-        }
-        else
-        {
-            // TODO eventually: VSync for non-GL screen?
-        }
-    }*/
+        if (Config::JIT_Enable)
+            ARMJIT::InvalidateBlockCache();
+    }
 
     EmuRunning = prevstatus;
 }
