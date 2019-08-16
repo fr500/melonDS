@@ -594,20 +594,9 @@ void AudioCallback(void* data, Uint8* stream, int len)
     s16 buf_in[1024*2];
     s16* buf_out = (s16*)stream;
 
-    int num_in;
-    int num_out = len;
-
-    SDL_LockMutex(AudioSyncLock);
-    num_in = SPU::ReadOutput(buf_in, len_in);
-    SDL_CondSignal(AudioSync);
-    SDL_UnlockMutex(AudioSyncLock);
-
-    if (num_in < 1)
-    {
-        memset(stream, 0, len*sizeof(s16)*2);
-        return;
-    }
-
+    int num_in = SPU::ReadOutput(buf_in, 710);
+    int num_out = 1024;
+//printf("took %d/%d samples\n", num_in, 710);
     int margin = 6;
     if (num_in < len_in-margin)
     {
